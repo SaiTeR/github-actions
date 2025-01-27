@@ -32,7 +32,9 @@ jobs:
 
       - name: Push image to server
         run: |
-          docker save nginx:dev | bzip2 | ssh -i ${{ secrets.INSTANCE_PRIVATE_KEY }} ${{ secrets.USERNAME }}@${{ secrets.IP }} 'bunzip2 | docker load'
+          echo "${{ secrets.INSTANCE_PRIVATE_KEY }}" > private_key
+          chmod 600 private_key
+          docker save nginx:dev | bzip2 | ssh -i private_key ${{ secrets.USERNAME }}@${{ secrets.IP }} 'bunzip2 | docker load'
           ssh -i ${{ secrets.INSTANCE_PRIVATE_KEY }} ${{ secrets.USERNAME }}@${{ secrets.IP }} "docker image inspect nginx:dev > /dev/null 2>&1 && echo 'Image successfully loaded' || { echo 'Failed to load image'; exit 1; }"
 
   
