@@ -28,7 +28,7 @@ jobs:
 
       - name: Test nginx
         run: |
-          curl -f http://localhost:8080 || exit 1
+          curl -f http://localhost:80 || exit 1
 
       - name: Push image to server
         run: |
@@ -48,7 +48,7 @@ jobs:
     steps:
       - name: Deploy to production server
         run: |
-          echo "${{ secrets.SSH_KEY }}" > private_key
+          echo "${{ secrets.INSTANCE_PRIVATE_KEY }}" > private_key
           chmod 600 private_key
           
           ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} "docker stop nginx-container || echo 'No container to stop'"
