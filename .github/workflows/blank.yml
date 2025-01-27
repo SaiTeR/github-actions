@@ -34,6 +34,8 @@ jobs:
         run: |
           echo "${{ secrets.INSTANCE_PRIVATE_KEY }}" > private_key
           chmod 600 private_key
+
+          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} "sudo docker rmi nginx:dev || echo 'No image to delete'"
           
           docker save nginx:dev | ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} 'sudo docker load'
           
