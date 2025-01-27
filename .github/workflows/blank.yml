@@ -51,12 +51,12 @@ jobs:
           echo "${{ secrets.INSTANCE_PRIVATE_KEY }}" > private_key
           chmod 600 private_key
           
-          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} "docker stop nginx-container || echo 'No container to stop'"
-          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} "docker rm nginx-container || echo 'No container to delete'"
-          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} "docker rmi nginx:prod || echo 'No image to delete'"
+          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} "sudo docker stop nginx-container || echo 'No container to stop'"
+          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} "sudo docker rm nginx-container || echo 'No container to delete'"
+          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} "sudo docker rmi nginx:prod || echo 'No image to delete'"
 
-          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} "docker tag nginx:dev nginx:prod"
-          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} "docker run -d --name nginx-container -p 80:80 nginx:prod"
+          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} "sudo docker tag nginx:dev nginx:prod"
+          ssh -i private_key -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.IP }} "sudo docker run -d --name nginx-container -p 80:80 nginx:prod"
 
 
 
