@@ -1,11 +1,10 @@
 name: Nginx CI / CD
 
-# Условия (триггеры) запуска пайплайна
 on:
-  push:                # При коммите в ветку "dev"
-    branches: ["dev"]
-  pull_request:        # При закрытии Pull Request в ветку "main" (Не важно утвержденный или нет. Надо будет дописать в условиях джобы)
-    branches: ["main"]
+  push:                
+    branches: ["dev"]   # При коммите в ветку "dev"
+  pull_request:        
+    branches: ["main"]  # При закрытии Pull Request в ветку "main" (Не важно утвержденный или нет. Надо будет дописать в условиях джобы)
     types: [ closed ]
 
 jobs:
@@ -23,19 +22,18 @@ jobs:
         run: |
           docker build -t nginx:dev .
 
-      - name: Run nginx container for testing
+      - name: Run nginx container
         run: |
           docker run -d -p 8080:80 nginx:dev
 
-      - name: Test nginx is running
+      - name: Test nginx
         run: |
           curl -f http://localhost:8080 || exit 1
 
-      # - name: Push image to server (dev)
-      #   if: github.ref == 'refs/heads/dev'
-      #   run: |
-      #     ssh -i ${{ secrets.INSTANCE_PRIVATE_KEY }} ${{ secrets.USERNAME }}@${{ secrets.IP }}  "docker pull nginx:dev || true"
-      #     docker save nginx:dev | bzip2 | ssh -i ${{ secrets.INSTANCE_PRIVATE_KEY }} user@server 'bunzip2 | docker load'
+      - name: Push image to server
+        run: |
+          docker save nginx:dev | bzip2 | ssh -i ${{ secrets.INSTANCE_PRIVATE_KEY }} ${{ secrets.USERNAME }}@${{ secrets.IP }} 'bunzip2 | docker load'
+          ssh -i ${{ secrets.INSTANCE_PRIVATE_KEY }} ${{ secrets.USERNAME }}@${{ secrets.IP }} "docker image inspect nginx:dev > /dev/null 2>&1 && echo 'Image successfully loaded' || { echo 'Failed to load image'; exit 1; }"
 
   
   # deploy:
