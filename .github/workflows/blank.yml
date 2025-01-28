@@ -24,11 +24,11 @@ jobs:
 
       - name: Run nginx container
         run: |
-          docker run -d -p 80:80 nginx:dev
+          docker run -d -p 8080:80 nginx:dev
 
       - name: Test nginx
         run: |
-          curl -f http://localhost:80 || exit 1
+          curl -f http://localhost:8080 || exit 1
 
       - name: Push image to server
         run: |
